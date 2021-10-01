@@ -1,16 +1,20 @@
 import {NextFunction, Request, Response, Router} from 'express';
 
 import GetPokemon from './api/getPokemon';
+import GetPokemonTranslated from './api/getPokemonTranslated';
 import ResponseError from './errors/responseError';
 import IEndpoint from './models/iEndpoint';
 import ILogger from './models/iLogger';
+import FunTranslationsService from './services/funTranslationsService';
 import PokeApiService from './services/pokeApiService';
 
 export default class Middleware {
+  funTranslationsService: FunTranslationsService;
   logger: ILogger;
   pokeApiService: PokeApiService;
 
   constructor(logger: ILogger) {
+    this.funTranslationsService = new FunTranslationsService();
     this.logger = logger;
     this.pokeApiService = new PokeApiService();
   }
@@ -18,11 +22,18 @@ export default class Middleware {
   createRouter(): Router {
     const router = Router();
     const getPokemon = new GetPokemon(this.pokeApiService);
+    const getPokemonTranslated = new GetPokemonTranslated(
+      this.funTranslationsService,
+      this.pokeApiService,
+    );
 
     router.get('/status', (req: Request, res: Response) => {
       res.send('OK');
     });
-
+    router.get(
+      '/pokemon/translated/:name',
+      this.execute.bind(this, getPokemonTranslated),
+    );
     router.get('/pokemon/:name', this.execute.bind(this, getPokemon));
 
     router.use(this.respondError.bind(this));
