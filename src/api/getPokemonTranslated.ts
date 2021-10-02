@@ -47,9 +47,9 @@ export default class GetPokemonTranslated {
                                isLegendary: boolean): Promise<null | string> {
     try {
       if (habitat === YODA_HABITAT || isLegendary) {
-        return this.funTranslationsService.getYodaTranslation(description);
+        return await this.funTranslationsService.getYodaTranslation(description);
       }
-      return this.funTranslationsService.getShakespeareTranslation(description);
+      return await this.funTranslationsService.getShakespeareTranslation(description);
     } catch {
       return description;
     }
