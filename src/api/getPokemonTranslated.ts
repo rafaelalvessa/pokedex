@@ -1,4 +1,5 @@
 import ResponseError from '../errors/responseError';
+import IEndpoint from '../models/iEndpoint';
 import IPokemonInformation from '../models/iPokemonInformation';
 import FunTranslationsService from '../services/funTranslationsService';
 import PokeApiService from '../services/pokeApiService';
@@ -9,7 +10,8 @@ interface IParams {
   name: string;
 }
 
-export default class GetPokemonTranslated {
+export default class GetPokemonTranslated implements IEndpoint<IParams,
+    IPokemonInformation> {
   funTranslationsService: FunTranslationsService;
   pokeApiService: PokeApiService;
 
